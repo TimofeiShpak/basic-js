@@ -4,8 +4,8 @@ const chainMaker = {
     return this.chain.length;
   },
   addLink(value) {
-    this.chain.push(`( ${value} )`);
-    return this;
+    value = `( ${value} )`;
+    this.chain.push(value);
   },
   removeLink(position) {
     if(typeof(position) === 'string' || position< 1 || position>this.getLength()){
