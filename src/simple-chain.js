@@ -6,6 +6,7 @@ const chainMaker = {
   addLink(value) {
     value = `( ${value} )`;
     this.chain.push(value);
+    return this;
   },
   removeLink(position) {
     if(typeof(position) === 'string' || position< 1 || position>this.getLength()){
