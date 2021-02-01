@@ -1,26 +1,29 @@
+const CustomError = require("../extensions/custom-error");
+
 const chainMaker = {
-    chain : [],
+  chain : [],
   getLength() {
     return this.chain.length;
   },
   addLink(value) {
-    value = `( ${value} )`;
-    this.chain.push(value);
+    this.chain.push(`( ${value} )`);
     return this;
   },
   removeLink(position) {
-    if(typeof(position) === 'string' || position< 1 || position>this.getLength()){
-    this.chain = [] ; throw new Error();}
-    else {this.chain.splice(position-1,1); return this;}
+    if (typeof position === 'number') {
+      this.chain.splice(position-1, 1);
+    } else {
+      this.chain = [];
+      throw 'throws an Error on removing wrong link';
+    }
+    return this;
   },
   reverseChain() {
-    this.chain.reverse()
+    this.chain.reverse();
     return this;
   },
   finishChain() {
-    let str = this.chain.join('~~');
-    this.chain = [];
-    return str;
+    return this.chain.splice(0).join('~~');
   }
 };
 

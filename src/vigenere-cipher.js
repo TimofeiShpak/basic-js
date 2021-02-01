@@ -1,70 +1,46 @@
-class VigenereCipheringMachine {
-    
-    
+const CustomError = require("../extensions/custom-error");
 
-     encrypt(a , b) {
-        if(a === undefined || b=== undefined) throw 'Not implemented';
-        let value = 65;
-        let arr = [];
-        for(let i = 0; i<26; i++){
-            arr[i] = new Array(26);
-            for(let j = 0; j<26; j++){
-                if((value+i+j)>90){arr[i][j]=(value+i+j-26);}
-            if((value+i+j)<=90){arr[i][j]=(value+i+j);}
-            }
+function crypt(str, key, op) {
+  let result = '';
+    let numbersKeys = 0;
+    str = str.toLowerCase();
+    key = key.toLowerCase();
+    for (let i = 0; i < str.length; i++) {
+      let code = str[i].codePointAt(0);
+      let newCode = 0;
+      if (code > 96 && code < 123) {
+        let keyCode = key[numbersKeys].codePointAt(0) - 97;
+        if (op === "+") {
+          newCode = code + keyCode;
+        } else {
+          newCode = code - keyCode;
         }
-        a=a.toUpperCase();
-        b=b.toUpperCase();
-        let word = a.split('');
-        let keyWord = b.split('');
-        let result = '';
-        let indexKey = 0;
-        for(let i=0; i<word.length; i++){
-        if(word[i].charCodeAt(0)>64 && word[i].charCodeAt(0)<91){if(i%keyWord.length==0)indexKey=i;
-            result += String.fromCharCode(arr[(word[i].charCodeAt(0)-65)][(keyWord[i-indexKey].charCodeAt(0)-65)]);}
-        else { result+=word[i];word.splice(i,1);i--; }
+        if (newCode > 122) {
+          newCode -= 26;
+        } else if (newCode < 97) {
+          newCode += 26;
         }
-        if (this.reverse === false) result = result.split('').reverse().join('');
-         return result;
-    
-            // remove line with error and write your code here
+        result += String.fromCodePoint(newCode);
+        numbersKeys++;
+        if (numbersKeys === key.length) {
+          numbersKeys -= key.length;
         }
-    
-     decrypt(a, b) {
-        if(a === undefined || b=== undefined) throw 'Not implemented';
-        let value = 65;
-        let arr = [];
-        for(let i = 0; i<26; i++){
-            arr[i] = new Array(26);
-            for(let j = 0; j<26; j++){
-                if((value+i+j)>90){arr[i][j]=(value+i+j-26);}
-            if((value+i+j)<=90){arr[i][j]=(value+i+j);}
-            }
-        }
-        a=a.toUpperCase();
-        b=b.toUpperCase();
-        let word = a.split('');
-        let keyWord = b.split('');
-        let result = '';
-        let indexKey = 0;
-        for(let i=0; i<word.length; i++){
-             if(word[i].charCodeAt(0)>64 && word[i].charCodeAt(0)<91){
-                if(i%keyWord.length==0)indexKey=i;
-                let str = (word[i].charCodeAt(0)-65);
-                let key = (keyWord[i-indexKey].charCodeAt(0)-65);
-                for(let i=0; i<26; i++){
-                if(arr[key][i]==(str+65))result+=String.fromCharCode(i+65);
-                }
-            }
-            else{result+=word[i];word.splice(i,1);i--;}
-        }   
-         if (this.reverse === false) result = result.split('').reverse().join('');
-         return result;
+      } else {
+        result += str[i];
+      }
     }
+    return result.toUpperCase();
+}
 
-    constructor(reverse) {
-        this.reverse = reverse;
-          }
+class VigenereCipheringMachine {
+  encrypt(str, key) {
+    let result = crypt(str, key, "+", this.reverse);
+    return result;
+  }    
+  decrypt(str, key) {
+    let result = crypt(str, key, "-", this.reverse);
+    return result;
+  }
 }
 
 module.exports = VigenereCipheringMachine;
